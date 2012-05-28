@@ -2,7 +2,7 @@
 
 namespace Knp\Console;
 
-class Events
+final class ConsoleEvents
 {
     const INIT = 'console.init';
 }

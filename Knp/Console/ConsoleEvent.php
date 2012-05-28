@@ -2,10 +2,10 @@
 
 namespace Knp\Console;
 
-use Symfony\Component\EventDispatcher\Event as BaseEvent;
+use Symfony\Component\EventDispatcher\Event;
 use Knp\Console\Application;
 
-class Event extends BaseEvent
+class ConsoleEvent extends Event
 {
     private $application;
 

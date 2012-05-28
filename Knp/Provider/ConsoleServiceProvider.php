@@ -6,8 +6,8 @@ use Silex\ServiceProviderInterface;
 use Silex\Application;
 
 use Knp\Console\Application as ConsoleApplication;
-use Knp\Console\Events as ConsoleEvents;
-use Knp\Console\Event as ConsoleEvent;
+use Knp\Console\ConsoleEvents;
+use Knp\Console\ConsoleEvent;
 
 class ConsoleServiceProvider implements ServiceProviderInterface
 {

@@ -92,8 +92,8 @@ Example:
 <?php
 
 use My\Command\MyCommand;
-use Knp\Console\Events as ConsoleEvents;
-use Knp\Console\Event as ConsoleEvent;
+use Knp\Console\ConsoleEvents;
+use Knp\Console\ConsoleEvent;
 
 $app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
     $app = $event->getApplication();
