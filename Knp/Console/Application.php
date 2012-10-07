@@ -17,6 +17,8 @@ class Application extends BaseApplication
 
         $this->silexApplication = $application;
         $this->projectDirectory = $projectDirectory;
+
+        $application->boot();
     }
 
     public function getSilexApplication()
