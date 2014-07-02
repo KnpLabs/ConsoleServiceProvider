@@ -20,6 +20,7 @@ class ConsoleServiceProvider implements ServiceProviderInterface
                 $app['console.name'],
                 $app['console.version']
             );
+            $application->setDispatcher($app['dispatcher']);
 
             $app['dispatcher']->dispatch(ConsoleEvents::INIT, new ConsoleEvent($application));
 
