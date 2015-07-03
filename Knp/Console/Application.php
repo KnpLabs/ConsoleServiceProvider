@@ -4,6 +4,8 @@ namespace Knp\Console;
 
 use Symfony\Component\Console\Application as BaseApplication;
 use Silex\Application as SilexApplication;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends BaseApplication
 {
@@ -17,8 +19,6 @@ class Application extends BaseApplication
 
         $this->silexApplication = $application;
         $this->projectDirectory = $projectDirectory;
-
-        $application->boot();
     }
 
     public function getSilexApplication()
@@ -29,5 +29,11 @@ class Application extends BaseApplication
     public function getProjectDirectory()
     {
         return $this->projectDirectory;
+    }
+    
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        $this->silexApplication->boot();
+        parent::run($input, $output);
     }
 }
