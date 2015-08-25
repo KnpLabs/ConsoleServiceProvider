@@ -2,18 +2,20 @@
 
 namespace Knp\Provider;
 
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
+use Silex\Api\BootableProviderInterface;
 
 use Knp\Console\Application as ConsoleApplication;
 use Knp\Console\ConsoleEvents;
 use Knp\Console\ConsoleEvent;
 
-class ConsoleServiceProvider implements ServiceProviderInterface
+class ConsoleServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
-        $app['console'] = $app->share(function() use ($app) {
+        $app['console'] = function() use ($app) {
             $application = new ConsoleApplication(
                 $app,
                 $app['console.project_directory'],
@@ -24,7 +26,7 @@ class ConsoleServiceProvider implements ServiceProviderInterface
             $app['dispatcher']->dispatch(ConsoleEvents::INIT, new ConsoleEvent($application));
 
             return $application;
-        });
+        };
     }
 
     public function boot(Application $app)
