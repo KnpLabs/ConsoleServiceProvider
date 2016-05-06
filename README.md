@@ -1,8 +1,6 @@
 # ConsoleServiceProvider
 
-This project is **NOT CURRENTLY MAINTAINED**. It may still work, but does have
-any active contributors. If you're interested in becoming the maintainer for
-this project, please open an issue!
+This project is now maintained by [Crimson Labs](https://github.com/CrimsonLabs) .
 
 Provides a `Symfony\Component\Console` based console for Silex.
 
