@@ -19,5 +19,10 @@
         "psr-0": {
             "Knp\\": ""
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0"
+        }
     }
 }
