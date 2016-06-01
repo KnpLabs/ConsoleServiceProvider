@@ -7,7 +7,7 @@ use Symfony\Component\Console\Command\Command as BaseCommand;
 /**
  * @method \Knp\Console\Application getApplication();
  */
-class Command extends BaseCommand
+abstract class Command extends BaseCommand
 {
     public function getSilexApplication()
     {
