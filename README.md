@@ -4,7 +4,7 @@ This project is now maintained by [Crimson Labs](https://github.com/CrimsonLabs)
 
 Provides a `Symfony\Component\Console` based console for Silex.
 
-Use Version 1 for Silex 1.* compatibility, Version 2 for Silex 2.* compatibility
+Use Version v1.0 for Silex 1.* compatibility, Version 2.0 for Silex 2.* compatibility
 
 ## Install
 
