@@ -4,6 +4,8 @@ This project is now maintained by [Crimson Labs](https://github.com/CrimsonLabs)
 
 Provides a `Symfony\Component\Console` based console for Silex.
 
+Use Version 1 for Silex 1.* compatibility, Version 2 for Silex 2.* compatibility
+
 ## Install
 
 Add `knplabs/console-service-provider` to your `composer.json` and register the service:
