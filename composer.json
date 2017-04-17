@@ -16,9 +16,17 @@
         "symfony/console":   "~2.3|~3.0",
         "silex/silex": "~2.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8|~5.4"
+    },
     "autoload": {
         "psr-4": {
             "Knp\\": "Knp/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Knp\\Tests\\": "Tests/"
         }
     }
 }

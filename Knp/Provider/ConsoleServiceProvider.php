@@ -4,18 +4,24 @@ namespace Knp\Provider;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Silex\Application;
 
 use Knp\Console\Application as ConsoleApplication;
 use Knp\Console\ConsoleEvents;
 use Knp\Console\ConsoleEvent;
 
+/**
+ * Symfony Console service provider for Silex.
+ */
 class ConsoleServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $app['console'] = function() use ($app) {
+        $app['console.name'] = 'Silex console';
+        $app['console.version'] = 'UNKNOWN';
+        // Assume we are in vendor/knplabs/console-service-provider/Knp/Provider
+        $app['console.project_directory'] = __DIR__.'/../../../../..';
 
+        $app['console'] = function () use ($app) {
             $application = new ConsoleApplication(
                 $app,
                 $app['console.project_directory'],
@@ -27,9 +33,5 @@ class ConsoleServiceProvider implements ServiceProviderInterface
 
             return $application;
         };
-    }
-
-    public function boot(Application $app)
-    {
     }
 }
