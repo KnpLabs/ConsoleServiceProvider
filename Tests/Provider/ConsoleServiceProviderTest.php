@@ -1,0 +1,46 @@
+<?php
+
+namespace Tests\Provider;
+
+use Knp\Console\Application as ConsoleApplication;
+use Knp\Provider\ConsoleServiceProvider;
+use Knp\Tests\Provider\Fixtures\TestCommand;
+use Silex\Application;
+use Symfony\Component\Console\Tester\ApplicationTester;
+
+
+class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
+{
+    public function testDefaultConfiguration()
+    {
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider());
+
+        $console = $app['console'];
+        $console->setAutoExit(false);
+        $console->add(new TestCommand());
+
+        $this->assertInstanceOf(ConsoleApplication::class, $console);
+
+        $tester = new ApplicationTester($console);
+        $tester->run(['command' => 'test:test']);
+
+        $this->assertContains('Test command', $tester->getDisplay());
+    }
+
+    public function testApplicationParametersAreInjected()
+    {
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider(), [
+            'console.name' => 'Test application',
+            'console.version' => '1.42',
+            'console.project_directory' => __DIR__,
+        ]);
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $this->assertSame('Test application', $console->getName());
+        $this->assertSame('1.42', $console->getVersion());
+        $this->assertSame(__DIR__, $console->getProjectDirectory());
+    }
+}
