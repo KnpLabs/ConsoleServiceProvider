@@ -106,3 +106,23 @@ $app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $even
 
 ?>
 ```
+
+## Listen to console events
+
+You can listen to the `Symfony\Component\Console\ConsoleEvents` events
+by adding listeners to Silex:
+
+```php
+<?php
+
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleEvent;
+use Symfony\Component\Console\Event\ConsoleExceptionEvent;
+
+$app->on(ConsoleEvents::EXCEPTION, function (ConsoleExceptionEvent $event) use ($app) {
+    // Log console errors
+    $app['logger']->error($event->getException()->getMessage());
+});
+
+?>
+```
