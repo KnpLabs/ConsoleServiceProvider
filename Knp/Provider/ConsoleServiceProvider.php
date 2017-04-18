@@ -22,16 +22,17 @@ class ConsoleServiceProvider implements ServiceProviderInterface
         $app['console.project_directory'] = __DIR__.'/../../../../..';
 
         $app['console'] = function () use ($app) {
-            $application = new ConsoleApplication(
+            $console = new ConsoleApplication(
                 $app,
                 $app['console.project_directory'],
                 $app['console.name'],
                 $app['console.version']
             );
+            $console->setDispatcher($app['dispatcher']);
 
-            $app['dispatcher']->dispatch(ConsoleEvents::INIT, new ConsoleEvent($application));
+            $app['dispatcher']->dispatch(ConsoleEvents::INIT, new ConsoleEvent($console));
 
-            return $application;
+            return $console;
         };
     }
 }

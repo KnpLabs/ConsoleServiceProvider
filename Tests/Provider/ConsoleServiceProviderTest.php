@@ -6,8 +6,8 @@ use Knp\Console\Application as ConsoleApplication;
 use Knp\Provider\ConsoleServiceProvider;
 use Knp\Tests\Provider\Fixtures\TestCommand;
 use Silex\Application;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Tester\ApplicationTester;
-
 
 class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,5 +42,25 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Test application', $console->getName());
         $this->assertSame('1.42', $console->getVersion());
         $this->assertSame(__DIR__, $console->getProjectDirectory());
+    }
+
+    public function testConsoleEventsAreDispatched()
+    {
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider());
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+        $console->setAutoExit(false);
+        $console->add(new TestCommand());
+
+        $listenerCalled = false;
+        $app['dispatcher']->addListener(ConsoleEvents::COMMAND, function () use (&$listenerCalled) {
+            $listenerCalled = true;
+        });
+        $tester = new ApplicationTester($console);
+        $tester->run(['command' => 'test:test']);
+
+        $this->assertTrue($listenerCalled);
     }
 }
