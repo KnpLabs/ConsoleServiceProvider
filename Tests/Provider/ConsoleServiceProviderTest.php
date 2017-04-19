@@ -4,6 +4,8 @@ namespace Tests\Provider;
 
 use Knp\Console\Application as ConsoleApplication;
 use Knp\Provider\ConsoleServiceProvider;
+use Knp\Tests\Provider\Fixtures\TestBootApplication;
+use Knp\Tests\Provider\Fixtures\TestBootCommand;
 use Knp\Tests\Provider\Fixtures\TestCommand;
 use Knp\Tests\Provider\Fixtures\TestConsoleApplication;
 use Silex\Application;
@@ -85,6 +87,7 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $app['dispatcher']->addListener(ConsoleEvents::COMMAND, function () use (&$listenerCalled) {
             $listenerCalled = true;
         });
+
         $tester = new ApplicationTester($console);
         $tester->run(['command' => 'test:test']);
 
@@ -109,6 +112,7 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($console->has('test:test'));
     }
+
 
     public function testDebugTwigCommand()
     {
@@ -156,5 +160,25 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $output = $tester->getDisplay();
 
         $this->assertContains('[OK] All 1 Twig files contain valid syntax.', $output);
+    }
+
+    public function testApplicationBootsBeforeCommand()
+    {
+        $app = new TestBootApplication();
+        $app->register(new ConsoleServiceProvider());
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $console->setAutoExit(false);
+        $console->add(new TestBootCommand());
+
+        $tester = new ApplicationTester($console);
+
+        $this->assertFalse($app->isBooted(), 'Loading the console should not boot the Silex application');
+        $tester->run(['command' => 'test:boot']);
+
+        $output = $tester->getDisplay();
+        $this->assertSame('Booted', $output, 'The Silex application must boot before console commands are executed');
     }
 }

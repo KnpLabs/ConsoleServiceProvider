@@ -27,8 +27,6 @@ class Application extends BaseApplication
 
         $this->silexApplication = $application;
         $this->projectDirectory = $projectDirectory;
-
-        $application->boot();
     }
 
     /**
@@ -49,5 +47,15 @@ class Application extends BaseApplication
     public function getProjectDirectory()
     {
         return $this->projectDirectory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doRun(InputInterface $input = null, OutputInterface $output = null)
+    {
+        $this->getSilexApplication()->boot();
+
+        return parent::doRun($input, $output);
     }
 }
