@@ -52,7 +52,7 @@ class Application extends BaseApplication
     /**
      * {@inheritdoc}
      */
-    public function doRun(InputInterface $input = null, OutputInterface $output = null)
+    public function doRun(InputInterface $input, OutputInterface $output)
     {
         $this->getSilexApplication()->boot();
 
