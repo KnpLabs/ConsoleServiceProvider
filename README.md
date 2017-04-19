@@ -82,16 +82,42 @@ $application->run();
 ?>
 ```
 
-### Use the Event Dispatcher
+### Extend the `console` service
 
-This way is intended for use by provider developers and exposes an unobstrusive way to register commands in 3 simple steps:
+This way is intended for use by provider developers and exposes an unobstrusive way to register commands.
 
-1. Register a listener to the `ConsoleEvents::INIT` event
-2. ???
-3. PROFIT!
+```php
+<?php
 
-Example:
+une Knp\Console\Application;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
+class UnderpantsProvider implements ServiceProviderInterface
+{
+    public function register(Container $container)
+    {
+        if (isset($container['console'])) {
+            $container->extend('console', function (Application $console) {
+                $console->add(new CollectCommand());
+                $console->add(new QuestionMarkCommand());
+                $console->add(new ProfitCommand());
+
+                return $console;
+            });
+        }
+    }
+}
+?>
+```
+
+### Use the Event Dispatcher (deprecated)
+
+If you used an old version of the console provider and still listen to the
+`Knp\Console\ConsoleEvents::INIT` event to register commands, you should
+modify your code and extend the `console` service instead.
+
+**Before:**
 ```php
 <?php
 
@@ -103,8 +129,20 @@ $app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $even
     $app = $event->getApplication();
     $app->add(new MyCommand());            
 });
+```
 
-?>
+**After:**
+```php
+<?php
+
+use My\Command\MyCommand;
+une Knp\Console\Application;
+
+$app->extend('console', function (Application $console) {
+    $console->add(new MyCommand());
+
+    return $console;
+});
 ```
 
 ## Listen to console events
@@ -123,6 +161,4 @@ $app->on(ConsoleEvents::EXCEPTION, function (ConsoleExceptionEvent $event) use (
     // Log console errors
     $app['logger']->error($event->getException()->getMessage());
 });
-
-?>
 ```
