@@ -2,18 +2,22 @@
 
 namespace Knp\Provider;
 
+use Knp\Console\Application as ConsoleApplication;
+use Knp\Console\ConsoleEvent;
+use Knp\Console\ConsoleEvents;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-
-use Knp\Console\Application as ConsoleApplication;
-use Knp\Console\ConsoleEvents;
-use Knp\Console\ConsoleEvent;
 
 /**
  * Symfony Console service provider for Silex.
  */
 class ConsoleServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * Registers the service provider.
+     *
+     * @param Container $app The Pimple container
+     */
     public function register(Container $app)
     {
         $app['console.name'] = 'Silex console';

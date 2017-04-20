@@ -14,6 +14,7 @@ class TestCommand extends Command
         $this->setName('test:test')
             ->setDescription('Test command.');
     }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->write('Test command');
