@@ -5,6 +5,7 @@ namespace Tests\Provider;
 use Knp\Console\Application as ConsoleApplication;
 use Knp\Provider\ConsoleServiceProvider;
 use Knp\Tests\Provider\Fixtures\TestCommand;
+use Knp\Tests\Provider\Fixtures\TestConsoleApplication;
 use Silex\Application;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -42,6 +43,29 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Test application', $console->getName());
         $this->assertSame('1.42', $console->getVersion());
         $this->assertSame(__DIR__, $console->getProjectDirectory());
+    }
+
+    public function testCanSetCustomApplicationClass()
+    {
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider(), [
+            'console.class' => TestConsoleApplication::class,
+        ]);
+
+        $this->assertInstanceOf(TestConsoleApplication::class, $app['console']);
+    }
+
+    public function testCommandsAsServiceAreRegistered()
+    {
+        $app = new Application();
+        $app['test_command'] = function () {
+            return new TestCommand();
+        };
+        $app->register(new ConsoleServiceProvider(), [
+            'console.command.ids' => ['test_command'],
+        ]);
+
+        $this->assertTrue($app['console']->has('test:test'));
     }
 
     public function testConsoleEventsAreDispatched()
