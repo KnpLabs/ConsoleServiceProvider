@@ -89,7 +89,7 @@ This way is intended for use by provider developers and exposes an unobstrusive 
 ```php
 <?php
 
-une Knp\Console\Application;
+use Knp\Console\Application;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -127,7 +127,7 @@ use Knp\Console\ConsoleEvent;
 
 $app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
     $app = $event->getApplication();
-    $app->add(new MyCommand());            
+    $app->add(new MyCommand());
 });
 ```
 
@@ -136,7 +136,7 @@ $app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $even
 <?php
 
 use My\Command\MyCommand;
-une Knp\Console\Application;
+use Knp\Console\Application;
 
 $app->extend('console', function (Application $console) {
     $console->add(new MyCommand());
