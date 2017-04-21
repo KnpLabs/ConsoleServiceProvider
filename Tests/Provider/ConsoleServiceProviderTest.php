@@ -63,4 +63,23 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($listenerCalled);
     }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Listening to the Knp\Console\ConsoleEvents::INIT event is deprecated %s
+     */
+    public function testKnpConsoleInitEventIsDispatched()
+    {
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider());
+
+        $app['dispatcher']->addListener(\Knp\Console\ConsoleEvents::INIT, function (\Knp\Console\ConsoleEvent $event) {
+            $event->getApplication()->add(new TestCommand());
+        });
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $this->assertTrue($console->has('test:test'));
+    }
 }
