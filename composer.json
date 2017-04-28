@@ -19,7 +19,9 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^3.2",
         "twig/twig": "~1.27|~2.0",
-        "symfony/twig-bridge": "~2.8|^3.0"
+        "symfony/twig-bridge": "~2.8|^3.0",
+        "symfony/web-server-bundle": "^3.3@dev",
+        "symfony/monolog-bridge": "^3.2"
     },
     "autoload": {
         "psr-4": {
