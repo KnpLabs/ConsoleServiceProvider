@@ -2,11 +2,14 @@
 
 namespace Knp\Provider;
 
+use Knp\Command\Twig\DebugCommand;
+use Knp\Command\Twig\LintCommand;
 use Knp\Console\Application as ConsoleApplication;
 use Knp\Console\ConsoleEvent;
 use Knp\Console\ConsoleEvents;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Symfony\Bridge\Twig\Command\DebugCommand as TwigBridgeDebugCommand;
 
 /**
  * Symfony Console service provider for Silex.
@@ -49,5 +52,22 @@ class ConsoleServiceProvider implements ServiceProviderInterface
 
             return $console;
         };
+
+        $commands = [];
+
+        if (isset($app['twig']) && class_exists(TwigBridgeDebugCommand::class)) {
+            $app['console.command.twig.debug'] = function (Container $container) {
+                return new DebugCommand($container);
+            };
+
+            $app['console.command.twig.lint'] = function (Container $container) {
+                return new LintCommand($container);
+            };
+
+            $commands[] = 'console.command.twig.debug';
+            $commands[] = 'console.command.twig.lint';
+        }
+
+        $app['console.command.ids'] = $commands;
     }
 }
