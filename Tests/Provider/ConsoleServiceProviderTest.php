@@ -7,8 +7,11 @@ use Knp\Provider\ConsoleServiceProvider;
 use Knp\Tests\Provider\Fixtures\TestCommand;
 use Knp\Tests\Provider\Fixtures\TestConsoleApplication;
 use Silex\Application;
+use Silex\Provider\TwigServiceProvider;
+use Symfony\Bridge\Twig\Command\DebugCommand;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -105,5 +108,53 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $console = $app['console'];
 
         $this->assertTrue($console->has('test:test'));
+    }
+
+    public function testDebugTwigCommand()
+    {
+        if (!class_exists(DebugCommand::class)) {
+            $this->markTestSkipped('symfony/twig-bridge is not available.');
+        }
+        $app = new Application();
+        $app->register(new TwigServiceProvider());
+        $app->register(new ConsoleServiceProvider());
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $this->assertTrue($console->has('debug:twig'));
+
+        $tester = new CommandTester($command = $console->find('debug:twig'));
+        $tester->execute([
+            'command' => 'debug:twig',
+            '--format' => 'json',
+        ]);
+        $output = json_decode($tester->getDisplay(), JSON_OBJECT_AS_ARRAY);
+
+        $this->assertArrayHasKey('functions', $output);
+    }
+
+    public function testLintTwigCommand()
+    {
+        if (!class_exists(DebugCommand::class)) {
+            $this->markTestSkipped('symfony/twig-bridge is not available.');
+        }
+        $app = new Application();
+        $app->register(new TwigServiceProvider());
+        $app->register(new ConsoleServiceProvider());
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $this->assertTrue($console->has('lint:twig'));
+
+        $tester = new CommandTester($command = $console->find('lint:twig'));
+        $tester->execute([
+            'command' => 'lint:twig',
+            'filename' => [__DIR__.'/../Fixtures/Command/Twig/valid.html.twig'],
+        ]);
+        $output = $tester->getDisplay();
+
+        $this->assertContains('[OK] All 1 Twig files contain valid syntax.', $output);
     }
 }
