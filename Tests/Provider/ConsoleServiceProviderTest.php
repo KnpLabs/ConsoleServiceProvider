@@ -113,7 +113,6 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($console->has('test:test'));
     }
 
-
     public function testDebugTwigCommand()
     {
         if (!class_exists(DebugCommand::class)) {
@@ -180,5 +179,18 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 
         $output = $tester->getDisplay();
         $this->assertSame('Booted', $output, 'The Silex application must boot before console commands are executed');
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testBootingSilexFromApplicationConstructor()
+    {
+        $app = new TestBootApplication();
+        $app->register(new ConsoleServiceProvider());
+        $app['console.boot_in_constructor'] = true;
+
+        $console = $app['console'];
+        $this->assertTrue($app->isBooted());
     }
 }
