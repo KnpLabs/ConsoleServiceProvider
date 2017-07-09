@@ -30,6 +30,9 @@ class ConsoleServiceProvider implements ServiceProviderInterface
         $app['console.class'] = ConsoleApplication::class;
         $app['console.command.ids'] = [];
 
+        // Maintain BC with projects that depend on the old behavior (application gets booted from console constructor)
+        $app['console.boot_in_constructor'] = false;
+
         $app['console'] = function () use ($app) {
             /** @var ConsoleApplication $console */
             $console = new $app['console.class'](

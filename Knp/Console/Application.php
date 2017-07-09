@@ -4,6 +4,8 @@ namespace Knp\Console;
 
 use Silex\Application as SilexApplication;
 use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Silex console application.
@@ -28,7 +30,10 @@ class Application extends BaseApplication
         $this->silexApplication = $application;
         $this->projectDirectory = $projectDirectory;
 
-        $application->boot();
+        if ($application['console.boot_in_constructor']) {
+            @trigger_error('Booting the Silex application from the console constructor is deprecated and won\'t be possble in v3 of the console provider.', E_USER_DEPRECATED);
+            $application->boot();
+        }
     }
 
     /**
@@ -49,5 +54,15 @@ class Application extends BaseApplication
     public function getProjectDirectory()
     {
         return $this->projectDirectory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+        $this->getSilexApplication()->boot();
+
+        return parent::doRun($input, $output);
     }
 }
