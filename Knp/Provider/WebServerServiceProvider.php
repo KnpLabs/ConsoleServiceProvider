@@ -31,10 +31,10 @@ class WebServerServiceProvider implements ServiceProviderInterface
         $container['web_server.environment'] = 'dev';
 
         $commands = [
-            'web_server.command.server_run',
-            'web_server.command.server_start',
-            'web_server.command.server_stop',
-            'web_server.command.server_status',
+            'server:run' => 'web_server.command.server_run',
+            'server:start' => 'web_server.command.server_start',
+            'server:stop' => 'web_server.command.server_stop',
+            'server:status' => 'web_server.command.server_status',
         ];
 
         $container['web_server.command.server_run'] = function (Container $container) {
@@ -65,7 +65,7 @@ class WebServerServiceProvider implements ServiceProviderInterface
             $container['web_server.command.server_log'] = function () {
                 return new ServerLogCommand();
             };
-            $commands[] = 'web_server.command.server_log';
+            $commands['server:log'] = 'web_server.command.server_log';
         }
 
         $container['console.command.ids'] = array_merge($container['console.command.ids'], $commands);

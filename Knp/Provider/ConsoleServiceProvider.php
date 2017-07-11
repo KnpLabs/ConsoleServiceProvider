@@ -28,6 +28,7 @@ class ConsoleServiceProvider implements ServiceProviderInterface
         // Assume we are in vendor/knplabs/console-service-provider/Knp/Provider
         $app['console.project_directory'] = __DIR__.'/../../../../..';
         $app['console.class'] = ConsoleApplication::class;
+        // List of command service ids indexed by command name (i.e: array('my:command' => 'my.command.service.id'))
         $app['console.command.ids'] = [];
 
         // Maintain BC with projects that depend on the old behavior (application gets booted from console constructor)
@@ -67,8 +68,8 @@ class ConsoleServiceProvider implements ServiceProviderInterface
                 return new LintCommand($container);
             };
 
-            $commands[] = 'console.command.twig.debug';
-            $commands[] = 'console.command.twig.lint';
+            $commands['debug:twig'] = 'console.command.twig.debug';
+            $commands['lint:twig'] = 'console.command.twig.lint';
         }
 
         $app['console.command.ids'] = $commands;
