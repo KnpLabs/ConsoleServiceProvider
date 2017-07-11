@@ -14,6 +14,7 @@ use Symfony\Bridge\Twig\Command\DebugCommand;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Yaml\Command\LintCommand as LintYamlCommand;
 
 class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -159,6 +160,29 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
         $output = $tester->getDisplay();
 
         $this->assertContains('[OK] All 1 Twig files contain valid syntax.', $output);
+    }
+
+    public function testLintYamlCommand()
+    {
+        if (!class_exists(LintYamlCommand::class)) {
+            $this->markTestSkipped('symfony/yaml is not available.');
+        }
+        $app = new Application();
+        $app->register(new ConsoleServiceProvider());
+
+        /** @var ConsoleApplication $console */
+        $console = $app['console'];
+
+        $this->assertTrue($console->has('lint:yaml'));
+
+        $tester = new CommandTester($command = $console->find('lint:yaml'));
+        $tester->execute([
+            'command' => 'lint:yaml',
+            'filename' => __DIR__.'/../Fixtures/Command/Yaml/valid.yml',
+        ]);
+        $output = $tester->getDisplay();
+
+        $this->assertContains('[OK] All 1 YAML files contain valid syntax.', $output);
     }
 
     public function testApplicationBootsBeforeCommand()
