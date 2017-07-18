@@ -1,164 +1,97 @@
+
 # ConsoleServiceProvider
 
-This project is now maintained by [Crimson Labs](https://github.com/CrimsonLabs) .
+Provides a [`Symfony\Component\Console`](http://symfony.com/doc/current/components/console.html) based console for Silex 2.x.
 
-Provides a `Symfony\Component\Console` based console for Silex.
+## Installation
 
-Use Version v1.0 for Silex 1.* compatibility, Version 2.0 for Silex 2.* compatibility
+Add `knplabs/console-service-provider` to your `composer.json` and register the service provider:
 
-## Install
-
-Add `knplabs/console-service-provider` to your `composer.json` and register the service:
+```
+composer require knplabs/console-service-provider
+```
 
 ```php
-<?php
-
 use Knp\Provider\ConsoleServiceProvider;
 
-$app->register(new ConsoleServiceProvider(), array(
-    'console.name'              => 'MyApplication',
-    'console.version'           => '1.0.0',
-    'console.project_directory' => __DIR__.'/..'
-));
-
-?>
+$app->register(new ConsoleServiceProvider());
 ```
 
-You can now copy the `console` executable in whatever place you see fit, and tweak it to your needs. You will need a way to fetch your silex application, the most common way is to return it from your bootstrap:
+You can now copy the `console` executable from the `bin` folder to whatever
+place you see fit, and tweak it to your needs.
+
+You will need a way to fetch your silex application, the most common way is
+to return it from your bootstrap file:
 
 ```php
-<?php
+use Knp\Provider\ConsoleServiceProvider;
+use Silex\Application;
 
-$app = new Silex\Application();
+$app = new Application();
 
-// your beautiful silex bootstrap
+$app->register(new ConsoleServiceProvider());
+$app->register(new SomeOtherServiceProvider());
 
 return $app;
-
-?>
 ```
 
-For the rest of this document, we will assume you do have an `app` directory, so the `console` executable will be located at `app/console`.
+For the rest of this documentation, we will assume you do have a `bin`
+directory, so the `console` executable will be located at `bin/console`.
 
 ## Usage
 
-Use the console just like any `Symfony\Component` based console:
+Use the console just like any `Symfony\Component\Console` based console:
 
 ```
-$ app/console my:command
+$ bin/console my:command
 ```
 
-## Write commands
+or on Windows:
 
-Your commands should extend `Knp\Command\Command` to have access to the 2 useful following commands:
+```
+$ php bin/console my:command
+```
 
-* `getSilexApplication`, which returns the silex application
-* `getProjectDirectory`, which returns your project's root directory (as configured earlier)
+## Configuration parameters
 
-I know, it's a lot to learn, but it's worth the pain.
+| Parameter                            | Default                 | Description  |
+|-----------------------------------|----------------------|-------------|
+| `console.name` (string)              | Silex console           | Name of your console application |
+| `console.version` (string)           | UNKNOWN                 | Version of your console application |
+| `console.project_directory` (string) | (auto-detected)         | Your project's directory path. The default value should work, assuming the provider is installed in `vendor/knplabs/console-service-provider` |
+| `console.class` (string)             | Knp\Console\Application | Class name of the console service |
+| `console.boot_in_constructor` (bool) | false                   | Whether the console should boot Silex when loaded (set it to `true` if you depend on [a bug that was fixed in 2.1](CHANGELOG.md#booting-silex-from-the-console-constructor)) |
+| `console.command.ids` (array)        | array()                 | Console commands registered as services |
 
-## Register commands
+## Default commands
 
-There are two ways of registering commands to the console application.
+The service provider will register the following commands if the corresponding
+Symfony components are installed:
 
-### Directly access the console application from the `console` executable
+- From `symfony/twig-bridge`, the `lint:twig` and `debug:twig` commands
+- From `symfony/yaml`, the `lint:yaml` command
 
-Open up `app/console`, and stuff your commands directly into the console application:
+### Web-server-bundle support
+
+The `WebServerServiceProvider` will register the commands provided by `symfony/web-server-bundle`.
 
 ```php
-#!/usr/bin/env php
-<?php
+$app = new Silex\Application();
 
-set_time_limit(0);
-
-$app = require_once __DIR__.'/bootstrap.php';
-
-use My\Command\MyCommand;
-
-$application = $app['console'];
-$application->add(new MyCommand());
-$application->run();
-
-?>
+$app->register(new Knp\Provider\ConsoleServiceProvider());
+$app->register(new Knp\Provider\WebServerServiceProvider(), array(
+    // Folder that contains your front controller/public files
+    'web_server.document_root' => __DIR__.'/../public',
+));
 ```
 
-### Extend the `console` service
+The server commands expect your front controller to be located in your
+document root and be called `app_dev.php`, `app.php`, `index_dev.php` or `index.php`.
 
-This way is intended for use by provider developers and exposes an unobstrusive way to register commands.
+For more information, please consult the [Symfony documentation](https://symfony.com/doc/current/setup/built_in_web_server.html).
 
-```php
-<?php
+## Recipes
 
-use Knp\Console\Application;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-
-class UnderpantsProvider implements ServiceProviderInterface
-{
-    public function register(Container $container)
-    {
-        if (isset($container['console'])) {
-            $container->extend('console', function (Application $console) {
-                $console->add(new CollectCommand());
-                $console->add(new QuestionMarkCommand());
-                $console->add(new ProfitCommand());
-
-                return $console;
-            });
-        }
-    }
-}
-?>
-```
-
-### Use the Event Dispatcher (deprecated)
-
-If you used an old version of the console provider and still listen to the
-`Knp\Console\ConsoleEvents::INIT` event to register commands, you should
-modify your code and extend the `console` service instead.
-
-**Before:**
-```php
-<?php
-
-use My\Command\MyCommand;
-use Knp\Console\ConsoleEvents;
-use Knp\Console\ConsoleEvent;
-
-$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
-    $app = $event->getApplication();
-    $app->add(new MyCommand());
-});
-```
-
-**After:**
-```php
-<?php
-
-use My\Command\MyCommand;
-use Knp\Console\Application;
-
-$app->extend('console', function (Application $console) {
-    $console->add(new MyCommand());
-
-    return $console;
-});
-```
-
-## Listen to console events
-
-You can listen to the `Symfony\Component\Console\ConsoleEvents` events
-by adding listeners to Silex:
-
-```php
-<?php
-
-use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\Console\Event\ConsoleEvent;
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
-
-$app->on(ConsoleEvents::EXCEPTION, function (ConsoleExceptionEvent $event) use ($app) {
-    // Log console errors
-    $app['logger']->error($event->getException()->getMessage());
-});
-```
+- [Writing and registering commands](doc/adding-commands.md)
+- [Testing your commands](doc/testing-commands.md)
+- [Listening to console events](doc/console-events.md)
