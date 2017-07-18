@@ -10,6 +10,7 @@ use Knp\Console\ConsoleEvents;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Symfony\Bridge\Twig\Command\DebugCommand as TwigBridgeDebugCommand;
+use Symfony\Component\Yaml\Command\LintCommand as LintYamlCommand;
 
 /**
  * Symfony Console service provider for Silex.
@@ -70,6 +71,13 @@ class ConsoleServiceProvider implements ServiceProviderInterface
 
             $commands['debug:twig'] = 'console.command.twig.debug';
             $commands['lint:twig'] = 'console.command.twig.lint';
+        }
+
+        if (class_exists(LintYamlCommand::class)) {
+            $app['console.command.yaml.lint'] = function () {
+                return new LintYamlCommand();
+            };
+            $commands['lint:yaml'] = 'console.command.yaml.lint';
         }
 
         $app['console.command.ids'] = $commands;
