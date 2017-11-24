@@ -10,6 +10,8 @@ use Symfony\Bridge\Twig\Command\DebugCommand as BaseDebugCommand;
  */
 class DebugCommand extends BaseDebugCommand
 {
+    protected static $defaultName = 'debug:twig';
+
     private $container;
 
     /**
