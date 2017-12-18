@@ -29,7 +29,8 @@ class LintCommand extends BaseLintCommand
      */
     protected function configure()
     {
-        $this->setName(static::$defaultName);
+        $this->setName('lint:twig');
+        parent::configure();
     }
     
     /**
