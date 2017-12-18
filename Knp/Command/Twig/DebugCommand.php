@@ -23,6 +23,14 @@ class DebugCommand extends BaseDebugCommand
 
         $this->container = $container;
     }
+    
+    /**
+     * Set the default command name
+     */
+    protected function configure()
+    {
+        $this->setName(static::$defaultName);
+    }
 
     /**
      * {@inheritdoc}
