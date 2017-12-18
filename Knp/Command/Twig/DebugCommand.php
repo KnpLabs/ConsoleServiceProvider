@@ -29,7 +29,8 @@ class DebugCommand extends BaseDebugCommand
      */
     protected function configure()
     {
-        $this->setName(static::$defaultName);
+        $this->setName('debug:twig');
+        parent::configure();
     }
 
     /**
