@@ -23,7 +23,15 @@ class LintCommand extends BaseLintCommand
 
         $this->container = $container;
     }
-
+    
+    /**
+     * Set the default command name
+     */
+    protected function configure()
+    {
+        $this->setName(static::$defaultName);
+    }
+    
     /**
      * {@inheritdoc}
      */
