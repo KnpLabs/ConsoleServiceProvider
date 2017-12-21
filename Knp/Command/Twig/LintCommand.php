@@ -10,6 +10,8 @@ use Symfony\Bridge\Twig\Command\LintCommand as BaseLintCommand;
  */
 class LintCommand extends BaseLintCommand
 {
+    protected static $defaultName = 'lint:twig';
+
     private $container;
 
     /**
