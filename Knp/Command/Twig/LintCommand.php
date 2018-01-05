@@ -25,7 +25,16 @@ class LintCommand extends BaseLintCommand
 
         $this->container = $container;
     }
-
+    
+    /**
+     * Set the default command name
+     */
+    protected function configure()
+    {
+        $this->setName('lint:twig');
+        parent::configure();
+    }
+    
     /**
      * {@inheritdoc}
      */
