@@ -165,7 +165,7 @@ class ConsoleServiceProviderTest extends \PHPUnit_Framework_TestCase
     public function testLintYamlCommand()
     {
         if (!class_exists(LintYamlCommand::class)) {
-            $this->markTestSkipped('symfony/yaml is not available.');
+            $this->markTestSkipped('symfony/yaml >= 3.2 is not available.');
         }
         $app = new Application();
         $app->register(new ConsoleServiceProvider());
