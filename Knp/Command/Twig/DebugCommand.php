@@ -21,7 +21,8 @@ class DebugCommand extends BaseDebugCommand
      */
     public function __construct(Container $container)
     {
-        parent::__construct();
+        // The constructor signature changed in twig-bridge 3.4
+        parent::__construct(isset(parent::$defaultName) ? $container['twig'] : static::$defaultName);
 
         $this->container = $container;
     }
