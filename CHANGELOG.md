@@ -2,6 +2,11 @@
 ConsoleServiceProvider changelog
 ================================
 
+v2.2.0 (2018-02-05)
+-------------------
+
+- Fixed compatibility with Symfony 3.4 and 4.0 (chihiro-adachi, skalpa)
+
 v2.1.0 (2017-07-18)
 -------------------
 
