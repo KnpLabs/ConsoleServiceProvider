@@ -5,9 +5,17 @@ namespace Knp\Tests\Provider;
 use Knp\Provider\ConsoleServiceProvider;
 use Knp\Provider\WebServerServiceProvider;
 use Silex\Application;
+use Symfony\Bundle\WebServerBundle\Command\ServerRunCommand;
 
 class WebServerServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists(ServerRunCommand::class)) {
+            self::markTestSkipped('The web-server-bundle component is not installed');
+        }
+    }
+
     public function testCommandsAreRegistered()
     {
         $app = new Application();
