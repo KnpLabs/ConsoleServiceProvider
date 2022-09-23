@@ -1,3 +1,6 @@
+# DEPRECATED
+Unfortunately we decided to not maintain this project anymore ([see why](https://knplabs.com/en/blog/news-for-our-foss-projects-maintenance)).
+If you want to mark another package as a replacement for this one please send an email to [hello@knplabs.com](mailto:hello@knplabs.com).
 
 # ConsoleServiceProvider
 
